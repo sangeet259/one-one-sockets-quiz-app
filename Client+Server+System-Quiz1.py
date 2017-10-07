@@ -1,15 +1,6 @@
-
-# coding: utf-8
-
-# In[1]:
-
-
 import socket
 import sys
 from _thread import *
-
-
-# In[2]:
 
 
 host =''
@@ -18,8 +9,6 @@ s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # To reuse the port immediately and notwait for the time out
 
 
-# In[3]:
-
 
 try:
     s.bind((host,port))
@@ -27,21 +16,17 @@ except socket.error as e:
     print(str(e))
 
 
-# In[4]:
-
 
 s.listen(5)
 print('Waiting for a connection.')
 
 
-# In[5]:
-
 
 no_of_clients=0
 agreements =0
+questions = 0
+players=[]
 
-
-# In[6]:
 
 
 def threaded_client(conn):
@@ -80,17 +65,30 @@ def threaded_client(conn):
             print(agreements)
             conn.send(str.encode(("It starts now")))
             # Quizzing actually starts
+            # First , just append this connection object in the players list !
+            players.append(conn)
+            print(players)
             # Lets code it out
-            while True:
-                data = conn.recv(2048)
-                reply='Server Output : '+data.decode('utf-8')
-                print(str(data.decode('utf-8')) == "exit\r\n")
-                if str(data.decode('utf-8')) == "exit\r\n":
-                    print("Bye Bye {}".format(str(client_info["port"])))
-                    break
-                conn.sendall(str.encode(reply))
+            # In this branch lets try out 10 questions to each
+            #while True:
+                # ask question
+                # wait for an answer
+                # check the answer 
+                # if correct , ask the other user a different question
+                # if wrong , then pass this question to the the other user
+                #           it doesnt matter if he ansers it correctly or not
+                #           
+                #-----------------------------------------------------------------
+                # data = conn.recv(2048)
+                # reply='Server Output : '+data.decode('utf-8')
+                # print(str(data.decode('utf-8')) == "exit\r\n")
+                # if str(data.decode('utf-8')) == "exit\r\n":
+                #     print("Bye Bye {}".format(str(client_info["port"])))
+                #     break
+                # conn.sendall(str.encode(reply))
         else :
             conn.send(str.encode("Anyways , thanks for your time !\n"))
+        players.remove(conn)
         no_of_clients -= 1
         print("Number of existing clients : ",no_of_clients)
         conn.close()
