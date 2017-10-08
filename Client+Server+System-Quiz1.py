@@ -1,6 +1,8 @@
 import socket
 import sys
 from _thread import *
+from sys import getsizeof
+import pickle
 
 
 host =''
@@ -8,30 +10,34 @@ port = 8006
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # To reuse the port immediately and notwait for the time out
 
-
-
+# a list of question and options and correct answer, question is str type option is a again a a list of 4 strings
+questions =["Whats 1+1","Whats 1+2","Whats 1+3","Whats 1+4","Whats 1+5","Whats 1+6","Whats 1+7","Whats 8+1","Whats 9+1","Whats 10+1"]
+answers=['2','3','4','5','6','7','8','9','10','11']
 try:
     s.bind((host,port))
 except socket.error as e:
     print(str(e))
 
 
-
 s.listen(5)
 print('Waiting for a connection.')
 
 
-
 no_of_clients=0
 agreements =0
-questions = 0
+total_questions = 0
 players=[]
-
+turn=0
 
 
 def threaded_client(conn):
     global no_of_clients
     global agreements
+    global total_questions
+    ques_to_me=0
+    my_score=0
+    global players
+    global turn
     # This is the scope of the current connection !
     # Put the information dictionary containing the name, port and address here
     client_info={}
@@ -56,6 +62,8 @@ def threaded_client(conn):
         if((conn.recv(2048))) == b'y\n':
             # Lets start quizzing !
             agreements+=1
+            my_pos=len(players)
+            players.append(conn)
             if (agreements == 1):
                 conn.send(str.encode(("Please wait for the other player")))
                 while True:
@@ -66,26 +74,47 @@ def threaded_client(conn):
             conn.send(str.encode(("It starts now")))
             # Quizzing actually starts
             # First , just append this connection object in the players list !
-            players.append(conn)
-            print(players)
-            # Lets code it out
-            # In this branch lets try out 10 questions to each
-            #while True:
-                # ask question
-                # wait for an answer
-                # check the answer 
-                # if correct , ask the other user a different question
-                # if wrong , then pass this question to the the other user
-                #           it doesnt matter if he ansers it correctly or not
-                #           
-                #-----------------------------------------------------------------
-                # data = conn.recv(2048)
-                # reply='Server Output : '+data.decode('utf-8')
-                # print(str(data.decode('utf-8')) == "exit\r\n")
-                # if str(data.decode('utf-8')) == "exit\r\n":
-                #     print("Bye Bye {}".format(str(client_info["port"])))
-                #     break
-                # conn.sendall(str.encode(reply))
+            
+            conn.send(str.encode(("Your position is {}\n").format(my_pos)))
+            
+            if (my_pos == 0):
+            	other_pos =1
+            else:
+            	other_pos =0
+
+            while True:
+            	# data = conn.recv(2048)
+            	# answer = data.decode('utf-8').rstrip()
+            	# print("the answer after decoding is "+answer)
+            	# print("It's type is {} and size is {} ".format(type(answer),getsizeof(answer)))
+            	# curr_ans=answers[total_questions]
+            	# print("The curr answer is {} Its type is {} and size is {}".format(curr_ans,type(curr_ans),getsizeof(curr_ans)))
+            	# print(answer==curr_ans)
+            	# experiment=[data,answer,curr_ans]
+            	# with open("file","wb") as f:
+            	# 	pickle.dump(experiment,f)
+            	if(turn==my_pos):
+            		ques_to_me+=1
+            		conn.send(str.encode(questions[total_questions]))
+            		
+            		data = conn.recv(2048)
+            		answer = data.decode('utf-8').rstrip()
+            		#if (answer==answers[total_questions]):
+            		curr_ans=answers[total_questions]
+            		if((answer)) == curr_ans:
+            			conn.send(str.encode("That was correct!\n"))
+            			my_score+=10
+            		else:
+            			conn.send(str.encode(("Sorry that wasn't correct!\n , correct answer is {}").format(curr_ans)))
+            		total_questions+=1
+            		#change_turn()
+            		if (my_pos == 0):
+            			turn =1
+            		else:
+            			turn =0
+            	if (ques_to_me==4):
+            		break
+            conn.send(str.encode(("Thanks for playing . Your final score is {}!\n").format(my_score)))
         else :
             conn.send(str.encode("Anyways , thanks for your time !\n"))
         players.remove(conn)
