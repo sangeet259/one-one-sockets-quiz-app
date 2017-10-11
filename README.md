@@ -3,7 +3,7 @@ Quiz over the terminal using sockets !
 
 This app uses python sockets library to connect two players and initiates a quiz between tham !
 
-###How to use ?
+### How to use ?
 
 **Open the termnial** ::
 
