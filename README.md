@@ -1,11 +1,12 @@
 # One on One Quiz App using sockets
-Quizz over the terminal using sockets !
+Quiz over the terminal using sockets !
 
 This app uses python sockets library to connect two players and initiates a quiz between tham !
 
-How to use ?
+###How to use ?
 
-open the termnial ::
+**Open the termnial** ::
+
 1. Start server 
 ```bash
 python3 server.py
