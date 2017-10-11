@@ -85,7 +85,7 @@ def threaded_client(conn):
             while True:
             	if(turn==my_pos):
             		ques_to_me+=1
-            		conn.send(str.encode(questions[total_questions]))
+            		conn.send(str.encode("\n"+questions[total_questions]))
             		
             		data = conn.recv(2048)
             		answer = data.decode('utf-8').rstrip()
