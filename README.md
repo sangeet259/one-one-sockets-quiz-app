@@ -22,4 +22,4 @@ python3 client.py localhost 8006
 
  Here is screenshot of it ::
 
- ![alt text](./image/server_client.png "server_client")
+ ![alt text](./images/server_client.png "server_client")
