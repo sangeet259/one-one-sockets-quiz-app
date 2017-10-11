@@ -32,7 +32,12 @@ if __name__ == "__main__":
         socket_list = [sys.stdin, s]
          
         # Get the list sockets which are readable
-        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+        try:
+            read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+        except KeyboardInterrupt as e:
+            #conn.close()
+            sys.exit()
+        #read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
          
         for sock in read_sockets:
             #incoming message from remote server

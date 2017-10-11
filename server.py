@@ -45,7 +45,7 @@ def threaded_client(conn):
     
     no_of_clients+=1
     if (no_of_clients>2):
-        msg="**************Two players are already quizzing*********************\n"
+        msg="**************Two players are already quizzing******************\n"
         conn.sendall(str.encode(msg))
         no_of_clients-=1
         conn.close()
@@ -83,16 +83,6 @@ def threaded_client(conn):
             	other_pos =0
 
             while True:
-            	# data = conn.recv(2048)
-            	# answer = data.decode('utf-8').rstrip()
-            	# print("the answer after decoding is "+answer)
-            	# print("It's type is {} and size is {} ".format(type(answer),getsizeof(answer)))
-            	# curr_ans=answers[total_questions]
-            	# print("The curr answer is {} Its type is {} and size is {}".format(curr_ans,type(curr_ans),getsizeof(curr_ans)))
-            	# print(answer==curr_ans)
-            	# experiment=[data,answer,curr_ans]
-            	# with open("file","wb") as f:
-            	# 	pickle.dump(experiment,f)
             	if(turn==my_pos):
             		ques_to_me+=1
             		conn.send(str.encode(questions[total_questions]))
@@ -114,9 +104,9 @@ def threaded_client(conn):
             			turn =0
             	if (ques_to_me==4):
             		break
-            conn.send(str.encode(("Thanks for playing . Your final score is {}!\n").format(my_score)))
+            conn.send(str.encode(("\nThanks for playing . Your final score is {}!\n").format(my_score)))
         else :
-            conn.send(str.encode("Anyways , thanks for your time !\n"))
+            conn.send(str.encode("\nAnyways , thanks for your time !\n"))
         players.remove(conn)
         no_of_clients -= 1
         print("Number of existing clients : ",no_of_clients)
